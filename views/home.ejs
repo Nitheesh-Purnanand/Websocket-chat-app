@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Chat App</title>
+    <link rel="stylesheet" href="/home.css">
 </head>
 <body>
-    <h1>app is working perfectly</h1>
+    <div class="contain">
+        <div class="big-container">
+            <form action="/signup" method="POST">
+                <div class="info-1">
+                    <label for="info">Name
+                        <input type="text" class="info" name="name">
+                    </label>
+                    <label for="info">Password
+                        <input type="text" class="info" name="password">
+                    </label>
+                </div>
+                <input type="submit" class="submit" value="Login">
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
