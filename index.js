@@ -46,14 +46,17 @@ app.post("/signup", async (req, res) => {
     try {
         const existingUser = await user.findOne({ name: name });
         if (existingUser) {
-            console.log(`User with name ${name} already exists`);
-            return res.status(400).send("User already exists");
-        }
+            if(existingUser.password == password){
+                res.render("index", { name });
+            }else{
+            console.log(`User with name ${existingUser.name} already exists`);
+            return res.status(400).send("User already exists");}
+        }else{
         const newUser = new user({ name: name, password: password });
         await newUser.save();
 
         console.log(`User ${name} signed up successfully`);
-        res.render("view", { name });
+        res.render("index", { name });}
     } catch (err) {
         console.error("Error during signup:", err);
         res.status(500).send("Error during signup");

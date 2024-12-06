@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whatsapp</title>
+    <link href="/index.css" rel="stylesheet" >
+</head>
+<body>
+    <div class="header"><img src="./whatsapp-brands-solid (1).svg"><p class="wsp">NotWhatsapp</p></div>
+    <div class="vt">
+        <div class="vto">
+        <div class="ch"><h1>Chats</h1></div>
+        <div class="box"><input type="text" class="sbox" placeholder="Search or start a new chat"></div>
+    
+        <!--  <div class="contact">
+           <div class="ig"> <img src="./user-solid (1).svg"></div>
+           <p class="name">Pardhu</p>
+        </div>
+
+       <div class="contact">
+            <div class="ig"> <img src="./user-solid (1).svg"></div>
+            <p class="name">Pavan</p>
+         </div>
+
+         <div class="contact">
+            <div class="ig"> <img src="./user-solid (1).svg"></div>
+            <p class="name">Nitheesh</p>
+         </div>
+         
+         <div class="contact">
+            <div class="ig"> <img src="./user-solid (1).svg"></div>
+            <p class="name">Suhas</p>
+         </div>
+
+         <div class="contact">
+            <div class="ig"> <img src="./user-solid (1).svg"></div>
+            <p class="name">Naveen</p>
+         </div>
+
+         <div class="contact">
+            <div class="ig"> <img src="./user-solid (1).svg"></div>
+            <p class="name">Manohar</p>
+         </div> -->
+         
+         <div class="contact">
+            <div class="ig"> <img src="/user-solid (1).svg"></div>
+            <p class="name"><%= name %></p>
+         </div>
+    </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js" integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io("http://localhost:3000");
+        let name = document.querySelector(".name").innerText
+        socket.on("connect", () => {
+            console.log(`Connected to the server!${name}`);
+            socket.emit("message", { text: socket.id});
+        });
+
+        socket.on("reply", (data) => {
+            console.log("Server reply:", data);
+        });
+    </script>
+</body>
+</html>
