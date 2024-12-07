@@ -40,8 +40,9 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("send-msg", (chat_box) => {
-        io.emit("receive-msg", chat_box);
+    socket.on("send-msg", (data) => {
+        data.chat_box = data.name1 + " : " + data.chat_box; 
+        io.emit("receive-msg", data.chat_box);
     });
 
     socket.on("details", (data) => {

@@ -60,7 +60,7 @@ document.querySelector(".send").addEventListener("click", () => {
         alert("Message cannot be empty!");
         return;
     }
-    socket.emit("send-msg", chat_box);
+    socket.emit("send-msg",{name1, chat_box});
 });
 
 
