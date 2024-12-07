@@ -12,56 +12,69 @@
         <div class="vto">
         <div class="ch"><h1>Chats</h1></div>
         <div class="box"><input type="text" class="sbox" placeholder="Search or start a new chat"></div>
-    
-        <!--  <div class="contact">
-           <div class="ig"> <img src="./user-solid (1).svg"></div>
-           <p class="name">Pardhu</p>
-        </div>
-
-       <div class="contact">
-            <div class="ig"> <img src="./user-solid (1).svg"></div>
-            <p class="name">Pavan</p>
-         </div>
-
-         <div class="contact">
-            <div class="ig"> <img src="./user-solid (1).svg"></div>
-            <p class="name">Nitheesh</p>
-         </div>
-         
-         <div class="contact">
-            <div class="ig"> <img src="./user-solid (1).svg"></div>
-            <p class="name">Suhas</p>
-         </div>
-
-         <div class="contact">
-            <div class="ig"> <img src="./user-solid (1).svg"></div>
-            <p class="name">Naveen</p>
-         </div>
-
-         <div class="contact">
-            <div class="ig"> <img src="./user-solid (1).svg"></div>
-            <p class="name">Manohar</p>
-         </div> -->
          
          <div class="contact">
             <div class="ig"> <img src="/user-solid (1).svg"></div>
-            <p class="name"><%= name %></p>
+            <p class="name name1"><%= name %></p>
          </div>
+         <% for (let i = 0; i < rem_users.length; i++) { %>
+            <div class="contact">
+            <div class="ig"> <img src="/user-solid (1).svg"></div>
+            <p class="name"><%= rem_users[i].name %></p>
+            </div>
+            
+         <% } %>
     </div>
+    <div class="main">
+        <div class="messages"></div>
+        <input type="text" name="chat_box" class="chat_box">
+        <input type="button" value="send" class="send">
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js" integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        const socket = io("http://localhost:3000");
-        let name = document.querySelector(".name").innerText
-        socket.on("connect", () => {
-            console.log(`Connected to the server!${name}`);
-            socket.emit("message", { text: socket.id,name: name});
-        });
+        let send = document.querySelector(".send");
+        let messages = document.querySelector(".messages");
+        function display(chat_box) {
+    const messageElement = document.createElement("div");
+    messageElement.textContent = chat_box;
+    document.querySelector(".messages").appendChild(messageElement);
+    document.querySelector(".chat_box").value = "";
+}
 
-        socket.on("reply", (data) => {
-            console.log("Server reply:", data);
-        });
+const socket = io("http://localhost:3000");
+const name = document.querySelector(".name1").innerText;
+
+socket.on("connect", () => {
+    console.log("Connected to the server");
+    socket.emit("message", { text: socket.id, name: name });
+});
+
+socket.on("reply", (data) => {
+    console.log("Server reply:", data);
+});
+
+document.querySelector(".send").addEventListener("click", () => {
+    const chat_box = document.querySelector(".chat_box").value.trim();
+    if (!chat_box) {
+        alert("Message cannot be empty!");
+        return;
+    }
+    socket.emit("send-msg", chat_box);
+});
+
+
+document.querySelector(".contact").addEventListener("click",()=>{
+    let name2 = document.querySelector(".name");
+    name2.style.color = "pink";
+})
+
+
+socket.on("receive-msg", (chat_box) => {
+    display(chat_box);
+});
+
+
     </script>
 </body>
 </html>

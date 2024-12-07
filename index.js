@@ -23,25 +23,36 @@ const server = app.listen(3000, () => {
 
 const io = new Server(server);
 
-io.on("connection", async (socket) => {
-    console.log("A user connected");
+io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
     socket.on("message", async (data) => {
         try {
-            console.log("Message received:", data.text);
-            let existingUser = await user.findOne({ name: data.name });
-                existingUser.socketid = data.text;
-                await existingUser.save();
-            socket.emit("reply", "Hello from the server!");
+            if (!data.name || !data.text) {
+                socket.emit("error", "Invalid data format.");
+                return;
+            }
+            const existingUser = await user.findOne({ name: data.name });
+            if (!existingUser) {
+                socket.emit("error", "User not found.");
+                return;
+            }
+            existingUser.socketid = data.text;
+            await existingUser.save();
+            socket.emit("reply", "Database updated successfully!");
         } catch (error) {
-            console.error("Error handling message:", error);
-            socket.emit("error", "Something went wrong on the server.");
+            socket.emit("error", "Something went wrong.");
         }
     });
 
+    socket.on("send-msg", (chat_box) => {
+        io.emit("receive-msg", chat_box);
+    });
+
     socket.on("disconnect", () => {
-        console.log("A user disconnected");
+        console.log("A user disconnected:", socket.id);
     });
 });
+
 
 
 const userschema = new mongoose.Schema({
@@ -63,9 +74,10 @@ app.post("/signup", async (req, res) => {
     const { name, password } = req.body;
     try {
         const existingUser = await user.findOne({ name: name });
+        let rem_users = await user.find({"name": {$ne: name}})
         if (existingUser) {
             if(existingUser.password == password){
-                res.render("index", { name });
+                res.render("index", { name , rem_users});
             }else{
             console.log(`User with name ${existingUser.name} already exists`);
             return res.status(400).send("User already exists");}
@@ -74,9 +86,10 @@ app.post("/signup", async (req, res) => {
         await newUser.save();
 
         console.log(`User ${name} signed up successfully`);
-        res.render("index", { name });}
+        res.render("index", { name , rem_users});}
     } catch (err) {
         console.error("Error during signup:", err);
         res.status(500).send("Error during signup");
     }
 });
+// db.sample.find({"locations.vname": {$ne: "vij"}})
