@@ -28,7 +28,7 @@
     <div class="main">
         <div class="messages"></div>
         <input type="text" name="chat_box" class="chat_box">
-        <input type="button" value="send" class="send">
+        <input type="submit" value="send" class="send">
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js" integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -60,22 +60,31 @@ document.querySelector(".send").addEventListener("click", () => {
         alert("Message cannot be empty!");
         return;
     }
-    socket.emit("send-msg",{name1, chat_box});
+    const messages = document.querySelector(".messages");
+    // if (messages.style.backgroundColor === "aliceblue") {
+    //     socket.emit("send-msg", { name1, chat_box });
+    // } else {
+        socket.emit("sending-msg", { name1, chat_box });
+    // }
 });
 
+socket.on("receiving-msg",(ele)=>{
+    display(ele)
+})
+
+socket.on("receive-msg", (chat_box) => {
+    display(chat_box);
+});
 
 document.querySelectorAll(".contact").forEach(contact => {
     contact.addEventListener("click", (event) => {
         const name = contact.querySelector(".name").innerText;
+        let messages = document.querySelector(".messages");
+        messages.style.backgroundColor = "#4e4b4b"
         display(name);
         socket.emit('details',{to_name : name,from_name : name1,from_id : socket.id })
+
     });
-});
-
-
-
-socket.on("receive-msg", (chat_box) => {
-    display(chat_box);
 });
 
 
