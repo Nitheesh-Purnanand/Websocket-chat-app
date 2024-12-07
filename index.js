@@ -27,10 +27,6 @@ io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
     socket.on("message", async (data) => {
         try {
-            if (!data.name || !data.text) {
-                socket.emit("error", "Invalid data format.");
-                return;
-            }
             const existingUser = await user.findOne({ name: data.name });
             if (!existingUser) {
                 socket.emit("error", "User not found.");
@@ -46,6 +42,14 @@ io.on("connection", (socket) => {
 
     socket.on("send-msg", (chat_box) => {
         io.emit("receive-msg", chat_box);
+    });
+
+    socket.on("details", (data) => {
+        if (data && data.to_name && data.from_name && data.from_id) {
+            console.log("Details received:", data);
+        } else {
+            console.error("Invalid data received in 'details' event:", data);
+        }
     });
 
     socket.on("disconnect", () => {

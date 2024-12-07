@@ -43,11 +43,11 @@
 }
 
 const socket = io("http://localhost:3000");
-const name = document.querySelector(".name1").innerText;
+const name1 = document.querySelector(".name1").innerText;
 
 socket.on("connect", () => {
     console.log("Connected to the server");
-    socket.emit("message", { text: socket.id, name: name });
+    socket.emit("message", { text: socket.id, name: name1 });
 });
 
 socket.on("reply", (data) => {
@@ -64,10 +64,14 @@ document.querySelector(".send").addEventListener("click", () => {
 });
 
 
-document.querySelector(".contact").addEventListener("click",()=>{
-    let name2 = document.querySelector(".name");
-    name2.style.color = "pink";
-})
+document.querySelectorAll(".contact").forEach(contact => {
+    contact.addEventListener("click", (event) => {
+        const name = contact.querySelector(".name").innerText;
+        display(name);
+        socket.emit('details',{to_name : name,from_name : name1,from_id : socket.id })
+    });
+});
+
 
 
 socket.on("receive-msg", (chat_box) => {
