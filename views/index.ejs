@@ -41,7 +41,13 @@
     document.querySelector(".messages").appendChild(messageElement);
     document.querySelector(".chat_box").value = "";
 }
-
+function display2(chat_box){
+    const messageElement = document.createElement("div");
+    messageElement.textContent = chat_box;
+    messageElement.style.backgroundColor = "red";
+    document.querySelector(".messages").appendChild(messageElement);
+    document.querySelector(".chat_box").value = "";
+}
 const socket = io("http://localhost:3000");
 const name1 = document.querySelector(".name1").innerText;
 
@@ -61,15 +67,11 @@ document.querySelector(".send").addEventListener("click", () => {
         return;
     }
     const messages = document.querySelector(".messages");
-    // if (messages.style.backgroundColor === "aliceblue") {
-    //     socket.emit("send-msg", { name1, chat_box });
-    // } else {
         socket.emit("sending-msg", { name1, chat_box });
-    // }
 });
 
 socket.on("receiving-msg",(ele)=>{
-    display(ele)
+    display2(ele)
 })
 
 socket.on("receive-msg", (chat_box) => {
@@ -81,7 +83,12 @@ document.querySelectorAll(".contact").forEach(contact => {
         const name = contact.querySelector(".name").innerText;
         let messages = document.querySelector(".messages");
         messages.style.backgroundColor = "#4e4b4b"
-        display(name);
+        if(name === name1){
+             let messages = document.querySelector(".messages");
+        messages.style.backgroundColor = "aliceblue";
+        }
+        else{
+        display(name);}
         socket.emit('details',{to_name : name,from_name : name1,from_id : socket.id })
 
     });

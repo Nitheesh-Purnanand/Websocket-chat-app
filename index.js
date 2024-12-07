@@ -24,10 +24,11 @@ const server = app.listen(3000, () => {
 const io = new Server(server);
 
 io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    // console.log("A user connected:", socket.id);
     socket.on("message", async (data) => {
         try {
             const existingUser = await user.findOne({ name: data.name });
+            console.log(`a user with name ${data.name} is connected`)
             if (!existingUser) {
                 socket.emit("error", "User not found.");
                 return;
@@ -42,9 +43,10 @@ io.on("connection", (socket) => {
 
     socket.on("details", async (data) => {
         if (data && data.to_name && data.from_name && data.from_id) {
-            console.log("Details received:", data);
+            // console.log("Details received:", data);
             let to_user = await user.findOne({ name: data.to_name });
             if (to_user) {
+                socket.to_user_name = to_user.name;
                 socket.to_user_id = to_user.socketid; // Store the recipient's socket ID for later use
             } else {
                 console.error("Recipient user not found:", data.to_name);
@@ -56,8 +58,14 @@ io.on("connection", (socket) => {
     
     socket.on("sending-msg", (data1) => {
         if (socket.to_user_id) {
+            // console.log(socket.to_user_id,data1.name1);
+            if(socket.to_user_name === data1.name1){
+                data1.chat_box = data1.name1 + " : " + data1.chat_box; 
+                io.emit("receive-msg", data1.chat_box);
+            }
+            else{
             data1.chat_box = data1.name1 + " : " + data1.chat_box; 
-            socket.to(socket.to_user_id).emit("receiving-msg", data1.chat_box);
+            socket.to(socket.to_user_id).emit("receiving-msg", data1.chat_box);}
         } else {
             data1.chat_box = data1.name1 + " : " + data1.chat_box; 
             io.emit("receive-msg", data1.chat_box);
