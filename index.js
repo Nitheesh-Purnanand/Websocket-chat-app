@@ -23,23 +23,41 @@ const server = app.listen(3000, () => {
 
 const io = new Server(server);
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     console.log("A user connected");
-    socket.on("message", (data) => {
-        console.log("Message received:", data);
-        socket.emit("reply", "Hello from the server!");
+    socket.on("message", async (data) => {
+        try {
+            console.log("Message received:", data.text);
+            let existingUser = await user.findOne({ name: data.name });
+                existingUser.socketid = data.text;
+                await existingUser.save();
+            socket.emit("reply", "Hello from the server!");
+        } catch (error) {
+            console.error("Error handling message:", error);
+            socket.emit("error", "Something went wrong on the server.");
+        }
     });
+
     socket.on("disconnect", () => {
         console.log("A user disconnected");
     });
 });
 
+
 const userschema = new mongoose.Schema({
     name: String,
     password: String,
+    socketid:String,
 });
-
+const chatschema = new mongoose.Schema({
+    to:String,
+    from:String,
+    message:String,
+})
 const user = mongoose.model("user", userschema);
+const chat = mongoose.model("chat",chatschema);
+let newchat = new chat({to:"pranathi",from:"nitheesh",message:"buggies isthava ammaa"})
+newchat.save()
 
 app.post("/signup", async (req, res) => {
     const { name, password } = req.body;

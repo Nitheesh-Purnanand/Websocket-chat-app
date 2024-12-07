@@ -56,7 +56,7 @@
         let name = document.querySelector(".name").innerText
         socket.on("connect", () => {
             console.log(`Connected to the server!${name}`);
-            socket.emit("message", { text: socket.id});
+            socket.emit("message", { text: socket.id,name: name});
         });
 
         socket.on("reply", (data) => {
