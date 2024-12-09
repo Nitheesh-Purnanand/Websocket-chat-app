@@ -26,7 +26,14 @@
          <% } %>
     </div>
     <div class="main">
-        <div class="messages"></div>
+        <div class="messages">
+            <% for(let i=0;i<=5;i++){ %>
+                <div class="card">
+                    message goes here
+                    <%=  %>
+                </div>
+                <% } %>
+        </div>
         <input type="text" name="chat_box" class="chat_box">
         <input type="submit" value="send" class="send">
     </div>
