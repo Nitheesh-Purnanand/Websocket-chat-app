@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
         if (data && data.to_name && data.from_name && data.from_id) {
             // console.log("Details received:", data);
             let to_user = await user.findOne({ name: data.to_name });
+            console.log(to_user)
             if (to_user) {
                 socket.to_user_name = to_user.name;
                 socket.to_user_id = to_user.socketid; // Store the recipient's socket ID for later use
@@ -56,14 +57,20 @@ io.on("connection", (socket) => {
         }
     });
     
-    socket.on("sending-msg", (data1) => {
+    socket.on("sending-msg",async (data1) => {
         if (socket.to_user_id) {
+            console.log(data1)
             // console.log(socket.to_user_id,data1.name1);
             if(socket.to_user_name === data1.name1){
                 data1.chat_box = data1.name1 + " : " + data1.chat_box; 
                 io.emit("receive-msg", data1.chat_box);
             }
             else{
+                console.log(socket.to_user_name ,data1.name1 ,data1.chat_box)
+                let newchat = new chat({to: socket.to_user_name ,from: data1.name1 ,message: data1.chat_box})
+                await newchat.save()
+                let tot_pvt_chat =await chat.find({"from":data1.name1 , "to":socket.to_user_name})
+                console.log(tot_pvt_chat)
             data1.chat_box = data1.name1 + " : " + data1.chat_box; 
             socket.to(socket.to_user_id).emit("receiving-msg", data1.chat_box);}
         } else {
@@ -92,8 +99,7 @@ const chatschema = new mongoose.Schema({
 })
 const user = mongoose.model("user", userschema);
 const chat = mongoose.model("chat",chatschema);
-let newchat = new chat({to:"pranathi",from:"nitheesh",message:"buggies isthava ammaa"})
-newchat.save()
+
 
 app.post("/signup", async (req, res) => {
     const { name, password } = req.body;
