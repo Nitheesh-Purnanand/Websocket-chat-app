@@ -1,114 +1,183 @@
-*{
-    margin:0;
+* {
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
+body {
+    background-color: #050303;
+    overflow: hidden; /* Prevents unwanted scrolling */
+}
+
+.header {
+    display: flex;
+    position: sticky;
+    top: 0px;
+    width: 100vw;
+    height: 55px;
     background-color: #050303;
 }
-.header{
-display: flex;
-position: sticky;
-top: 0px;
-width: 100vw;
-height: 55px;
-background-color: #050303;
-}
-img{
+
+img {
     margin-left: 20px;
     margin-top: 10px;
     height: 40px;
     width: 40px;
 }
-.wsp{
+
+.wsp {
     margin-left: 10px;
     font-size: 35px;
     margin-top: 10px;
     color: white;
 }
-.vt{
-    background-color: #322f2f;
-    height: 980px;
-    width: 1975px;
-    margin-top: 3px;
-    margin-left: 70px;
-    border-radius: 10px;
+
+.vt {
     display: flex;
+    background-color: #322f2f;
+    height: calc(100vh - 55px);
+    width: 100%;
+    margin-top: 3px;
+    border-radius: 10px;
 }
-.chat_box{
-    position: sticky;
-    bottom: 0px;
-    top: 850px;
-    right: 0px;
-    height: 50px;
-    width: 1250px;
-}
-.send{
-    position: sticky;
-    bottom: 0px;
-    top: 850px;
-    right: 0px;
-    height: 50px;
-    width: 150px;
-}
-.messages{
-    background-color: aliceblue;
-    height: 80%;
-    color: rgb(0, 0, 0);
-}
-.vto{
+
+.vto {
     border: 5px solid black;
-    height: 980px;
-    width: 560px;
+    height: 100%;
+    width: 30%;
+    overflow-y: auto; /* Enables vertical scrolling for the chat list */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #4e4b4b #322f2f; /* Custom scrollbar colors */
 }
-.ch{
+
+.ch {
     padding-top: 20px;
     color: white;
     margin-left: 20px;
 }
-h1{
+
+h1 {
     font-weight: 100;
 }
-.sbox{
+
+.sbox {
     height: 40px;
-    width: 500px;
-    margin-top: 15px;
-    margin-left: 20px;
+    width: 90%;
+    margin: 15px auto;
     border-radius: 10px;
     background-color: #4e4b4b;
-    color:white;
+    color: white;
     border: 3px solid black;
+    display: block;
 }
 
-.ig{
+.ig {
     background-color: #4e4b4b;
     margin-left: 10px;
     height: 70px;
-    width: 80px;
-    border-radius: 100px;
-    
-} 
-.contact{
-margin-top: 30px;
-margin-left: 15px;
-display: flex;
-border-radius: 10px;
+    width: 70px;
+    border-radius: 50%;
 }
-.name{
+
+.contact {
+    margin: 10px 15px;
+    display: flex;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.name {
     margin-left: 25px;
     margin-top: 10px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 600;
     color: white;
 }
 
-.contact:hover{
+.contact:hover {
     cursor: pointer;
-    background-color:#4e4b4b ;
-   
+    background-color: #4e4b4b;
 }
-.name1{
+
+.name1 {
     background-color: #841010;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+    background-color: aliceblue;
+    border-left: 5px solid black;
+    justify-content: space-between;
+}
+.input-container {
+    display: flex;
+    align-items: center; /* Vertically aligns items */
+    padding: 10px; /* Spacing inside the container */
+    background-color: aliceblue;
+    border-top: 1px solid #ddd; /* Top border for separation */
+}
+
+
+.messages {
+    flex: 1;
+    overflow-y: auto; /* Enables scrolling for chat messages */
+    padding: 10px;
+    color: rgb(0, 0, 0);
+}
+
+.chat_box {
+    width: 85%; /* Retained width */
+    height: 60px; /* Increased height */
+    margin: 0; /* Removed extra margins */
+    padding: 15px 20px; /* Increased internal padding */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 25px; /* Rounded edges for a WhatsApp-like appearance */
+    outline: none;
+    font-size: 18px; /* Slightly larger font size */
+    background-color: #f0f0f0; /* Light gray background */
+    color: #333; /* Dark text for readability */
+}
+
+
+.send {
+    width: 10%; /* Smaller width for proportion */
+    height: 40px; /* Matches chat_box height */
+    margin-left: 10px; /* Adds space between chat_box and send */
+    background-color: #25d366; /* WhatsApp green */
+    color: white;
+    cursor: pointer;
+    border-radius: 20px; /* Rounded edges */
+    border: none;
+    font-size: 16px; /* Matches chat_box font size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.send:hover {
+    background-color: #1aa84e; /* Darker green on hover */
+}
+
+
+.send {
+    width: 12%; /* Slightly wider */
+    height: 60px; /* Matches chat_box height */
+    margin-left: 15px; /* Adjusted space between chat_box and send */
+    background-color: #25d366; /* WhatsApp green */
+    color: white;
+    cursor: pointer;
+    border-radius: 30px; /* More pronounced rounding */
+    border: none;
+    font-size: 18px; /* Matches chat_box font size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.send:hover {
+    background-color: #1aa84e; /* Darker green on hover */
 }
