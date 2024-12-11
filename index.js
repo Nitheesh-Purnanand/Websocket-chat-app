@@ -3,10 +3,13 @@ const mongoose = require("mongoose");
 const { Server } = require("socket.io");
 
 const app = express();
-
+const path = require("path")
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+
+const __dirname1 = path.resolve()
+app.use(express.static(path.join(__dirname1,"public")))
 
 mongoose
     .connect("mongodb://127.0.0.1:27017/whatsapp_users")
