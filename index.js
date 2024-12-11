@@ -11,10 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 const __dirname1 = path.resolve()
 app.use(express.static(path.join(__dirname1,"public")))
 
-mongoose
-    .connect("mongodb://127.0.0.1:27017/whatsapp_users")
-    .then(() => console.log("Connection successful"))
-    .catch((err) => console.error("Database connection error:", err));
+mongoose.connect("mongodb://127.0.0.1:27017/whatsapp_users", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 30000, // Increase timeout
+});
+
 
 app.get("/", (req, res) => {
     res.render("home");
