@@ -42,7 +42,7 @@
     <script>
         let send = document.querySelector(".send");
         let messages = document.querySelector(".messages");
-        function display(chat_box) {
+function display(chat_box) {
     const messageElement = document.createElement("div");
     messageElement.textContent = chat_box;
     document.querySelector(".messages").appendChild(messageElement);
@@ -54,6 +54,9 @@ function display2(chat_box){
     messageElement.style.backgroundColor = "red";
     document.querySelector(".messages").appendChild(messageElement);
     document.querySelector(".chat_box").value = "";
+}
+function display3(array){
+    
 }
 const socket = io("http://localhost:3000");
 const name1 = document.querySelector(".name1").innerText;
@@ -84,6 +87,17 @@ socket.on("receiving-msg",(ele)=>{
 socket.on("receive-msg", (chat_box) => {
     display(chat_box);
 });
+
+
+socket.on("display-msg",(data)=>{
+// //    display3(data)
+// display3(data.tot_chats);
+console.log(data.tot_chats);
+
+data.tot_chats.forEach(element => {
+        display(element.message)
+    });
+})
 
 document.querySelectorAll(".contact").forEach(contact => {
     contact.addEventListener("click", (event) => {

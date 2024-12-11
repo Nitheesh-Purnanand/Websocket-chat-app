@@ -43,12 +43,38 @@ io.on("connection", (socket) => {
 
     socket.on("details", async (data) => {
         if (data && data.to_name && data.from_name && data.from_id) {
-            // console.log("Details received:", data);
+            
             let to_user = await user.findOne({ name: data.to_name });
-            console.log(to_user)
+            // console.log(to_user)
             if (to_user) {
                 socket.to_user_name = to_user.name;
-                socket.to_user_id = to_user.socketid; // Store the recipient's socket ID for later use
+                socket.to_user_id = to_user.socketid;
+                // here the getting of data frpm atabase and sendig it to frontend must be done
+                let from_chats = await chat.find({"to": data.to_name , "from": data.from_name})
+                let to_chats = await chat.find({"from": data.to_name , "to": data.from_name})
+                let tot_chats = await chat.find({ $or: [{ "to": data.to_name , "from": data.from_name },{ "from": data.to_name , "to": data.from_name }]})
+                    // console.log(from_chats,to_chats);
+                    // io.emit("display-msg",{from_chats,to_chats});
+                    console.log(data,socket.to_user_id);
+                  socket.to( socket.to_user_id ).emit("display-msg",{tot_chats})
+                
+
+
+
+
+
+                    
+
+
+
+
+
+
+
+
+
+
+
             } else {
                 console.error("Recipient user not found:", data.to_name);
             }
@@ -59,18 +85,18 @@ io.on("connection", (socket) => {
     
     socket.on("sending-msg",async (data1) => {
         if (socket.to_user_id) {
-            console.log(data1)
+            // console.log(data1)
             // console.log(socket.to_user_id,data1.name1);
             if(socket.to_user_name === data1.name1){
                 data1.chat_box = data1.name1 + " : " + data1.chat_box; 
                 io.emit("receive-msg", data1.chat_box);
             }
             else{
-                console.log(socket.to_user_name ,data1.name1 ,data1.chat_box)
+                // console.log(socket.to_user_name ,data1.name1 ,data1.chat_box)
                 let newchat = new chat({to: socket.to_user_name ,from: data1.name1 ,message: data1.chat_box})
                 await newchat.save()
                 let tot_pvt_chat =await chat.find({"from":data1.name1 , "to":socket.to_user_name})
-                console.log(tot_pvt_chat)
+                // console.log(tot_pvt_chat)
             data1.chat_box = data1.name1 + " : " + data1.chat_box; 
             socket.to(socket.to_user_id).emit("receiving-msg", data1.chat_box);}
         } else {
