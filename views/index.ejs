@@ -57,10 +57,11 @@ function display2(chat_box){
 }
 function display3(chats) {
     const messages = document.querySelector(".messages");
-    messages.innerHTML = ""; // Clear previous messages
+    messages.innerHTML = "";
     chats.forEach(chat => {
         const messageElement = document.createElement("div");
-        messageElement.textContent = `${chat.from}: ${chat.message}`;
+        // messageElement.textContent = `${chat.from}: ${chat.message}`;
+        messageElement.textContent = `${chat.message}`
         messageElement.style.backgroundColor = chat.from === name1 ? "aliceblue" : "#4e4b4b";
         messages.appendChild(messageElement);
     });
@@ -77,25 +78,10 @@ socket.on("reply", (data) => {
     console.log("Server reply:", data);
 });
 
-document.querySelector(".send").addEventListener("click", () => {
-    const chat_box = document.querySelector(".chat_box").value.trim();
-    if (!chat_box) {
-        alert("Message cannot be empty!");
-        return;
-    }
-    const messages = document.querySelector(".messages");
-        socket.emit("sending-msg", { name1, chat_box });
-});
-
-socket.on("receiving-msg",(ele)=>{
-    display2(ele)
-})
 
 socket.on("receive-msg", (chat_box) => {
     display(chat_box);
 });
-
-
 
 
 document.querySelector(".vt").addEventListener("click", event => {
@@ -110,8 +96,12 @@ document.querySelector(".vt").addEventListener("click", event => {
         socket.on("display-msg", data => {
             display3(data.tot_chats);
         });
+        socket.on("receiving-msg",(ele)=>{
+        display(ele)
+        })
     }
 });
+
 document.querySelector(".send").addEventListener("click", () => {
     const chat_box = document.querySelector(".chat_box").value.trim();
     if (!chat_box) {
@@ -119,8 +109,9 @@ document.querySelector(".send").addEventListener("click", () => {
         return;
     }
     socket.emit("sending-msg", { name1, chat_box });
-    document.querySelector(".chat_box").value = ""; // Clear input
+    document.querySelector(".chat_box").value = "";
 });
+
 
 
     </script>

@@ -23,10 +23,10 @@ const server = app.listen(3000, () => {
 
 const io = new Server(server);
 
+
+
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
-
-    // Handle user connection and update socket ID
     socket.on("message", async (data) => {
         try {
             const existingUser = await user.findOne({ name: data.name });
@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
                 socket.emit("error", "User not found.");
                 return;
             }
-            existingUser.socketid = data.text; // Update socket ID
+            existingUser.socketid = data.text;
             await existingUser.save();
             socket.emit("reply", "Database updated successfully!");
         } catch (error) {
@@ -42,18 +42,18 @@ io.on("connection", (socket) => {
             socket.emit("error", "Something went wrong.");
         }
     });
-
-    // Fetch chat history and emit to client
     socket.on("details", async (data) => {
-        if (data && data.to_name && data.from_name) {
+        if (data && data.to_name && data.from_name && data.from_id) {
             try {
+                let to_user = await user.findOne({ name: data.to_name });
+                    socket.to_user_name = to_user.name;
+                    socket.to_user_id = to_user.socketid;
                 const tot_chats = await chat.find({
                     $or: [
                         { to: data.to_name, from: data.from_name },
                         { from: data.to_name, to: data.from_name },
                     ],
-                }).sort({ _id: 1 }); // Sort by timestamp/order
-
+                }).sort({ _id: 1 });
                 socket.emit("display-msg", { tot_chats });
             } catch (error) {
                 console.error("Error fetching chat history:", error);
@@ -63,34 +63,29 @@ io.on("connection", (socket) => {
         }
     });
 
-    // Save and forward messages
-    socket.on("sending-msg", async (data) => {
-        if (!socket.to_user_id) {
-            data.chat_box = `${data.name1}: ${data.chat_box}`;
-            io.emit("receive-msg", data.chat_box);
-            return;
-        }
-
-        try {
-            const newChat = new chat({
-                to: socket.to_user_name,
-                from: data.name1,
-                message: data.chat_box,
-            });
-            await newChat.save();
-
-            socket.to(socket.to_user_id).emit("receiving-msg", `${data.name1}: ${data.chat_box}`);
-        } catch (error) {
-            console.error("Error saving or sending message:", error);
+    socket.on("sending-msg",async (data1) => {
+        if (socket.to_user_id) {
+            // console.log(data1)
+            // console.log(socket.to_user_id,data1.name1);
+            if(socket.to_user_name === data1.name1){
+                data1.chat_box = data1.name1 + " : " + data1.chat_box; 
+                io.emit("receive-msg", data1.chat_box);
+            }
+            else{
+                let newchat = new chat({to: socket.to_user_name ,from: data1.name1 ,message: data1.chat_box})
+                await newchat.save()
+            // data1.chat_box = data1.name1 + " : " + data1.chat_box; 
+            socket.to(socket.to_user_id).emit("receiving-msg", data1.chat_box);}
+        } else {
+            data1.chat_box = data1.name1 + " : " + data1.chat_box; 
+            io.emit("receive-msg", data1.chat_box);
         }
     });
 
-    // Handle disconnection
     socket.on("disconnect", () => {
         console.log("A user disconnected:", socket.id);
     });
 });
-
 
 
 const userschema = new mongoose.Schema({
