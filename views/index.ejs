@@ -55,8 +55,15 @@ function display2(chat_box){
     document.querySelector(".messages").appendChild(messageElement);
     document.querySelector(".chat_box").value = "";
 }
-function display3(array){
-    
+function display3(chats) {
+    const messages = document.querySelector(".messages");
+    messages.innerHTML = ""; // Clear previous messages
+    chats.forEach(chat => {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `${chat.from}: ${chat.message}`;
+        messageElement.style.backgroundColor = chat.from === name1 ? "aliceblue" : "#4e4b4b";
+        messages.appendChild(messageElement);
+    });
 }
 const socket = io("http://localhost:3000");
 const name1 = document.querySelector(".name1").innerText;
@@ -89,30 +96,30 @@ socket.on("receive-msg", (chat_box) => {
 });
 
 
-socket.on("display-msg",(data)=>{
-// //    display3(data)
-// display3(data.tot_chats);
-console.log(data.tot_chats);
 
-data.tot_chats.forEach(element => {
-        display(element.message)
-    });
-})
 
-document.querySelectorAll(".contact").forEach(contact => {
-    contact.addEventListener("click", (event) => {
+document.querySelector(".vt").addEventListener("click", event => {
+    const contact = event.target.closest(".contact");
+    if (contact) {
         const name = contact.querySelector(".name").innerText;
-        let messages = document.querySelector(".messages");
-        messages.style.backgroundColor = "#4e4b4b"
-        if(name === name1){
-             let messages = document.querySelector(".messages");
-        messages.style.backgroundColor = "aliceblue";
-        }
-        else{
-        display(name);}
-        socket.emit('details',{to_name : name,from_name : name1,from_id : socket.id })
+        const messages = document.querySelector(".messages");
+        messages.style.backgroundColor = name === name1 ? "aliceblue" : "#4e4b4b";
 
-    });
+        socket.emit("details", { to_name: name, from_name: name1, from_id: socket.id });
+
+        socket.on("display-msg", data => {
+            display3(data.tot_chats);
+        });
+    }
+});
+document.querySelector(".send").addEventListener("click", () => {
+    const chat_box = document.querySelector(".chat_box").value.trim();
+    if (!chat_box) {
+        alert("Message cannot be empty!");
+        return;
+    }
+    socket.emit("sending-msg", { name1, chat_box });
+    document.querySelector(".chat_box").value = ""; // Clear input
 });
 
 
