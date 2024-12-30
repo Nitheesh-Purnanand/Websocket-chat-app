@@ -23,12 +23,14 @@ const PORT = 3000;
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 30000,
+    serverSelectionTimeoutMS: 30000, // Increase timeout
+    connectTimeoutMS: 30000,       // Increase connection timeout
 }).then(() => {
     console.log('Connected to MongoDB successfully');
 }).catch((err) => {
     console.error('MongoDB connection error:', err);
 });
+
 
 // Schemas
 const userschema = new mongoose.Schema({
