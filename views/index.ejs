@@ -40,33 +40,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js" integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        let send = document.querySelector(".send");
-        let messages = document.querySelector(".messages");
-function display(chat_box) {
-    const messageElement = document.createElement("div");
-    messageElement.textContent = chat_box;
-    document.querySelector(".messages").appendChild(messageElement);
-    document.querySelector(".chat_box").value = "";
-}
-function display2(chat_box){
-    const messageElement = document.createElement("div");
-    messageElement.textContent = chat_box;
-    messageElement.style.backgroundColor = "red";
-    document.querySelector(".messages").appendChild(messageElement);
-    document.querySelector(".chat_box").value = "";
-}
-function display3(chats) {
-    const messages = document.querySelector(".messages");
-    messages.innerHTML = "";
-    chats.forEach(chat => {
-        const messageElement = document.createElement("div");
-        // messageElement.textContent = `${chat.from}: ${chat.message}`;
-        messageElement.textContent = `${chat.message}`
-        messageElement.style.backgroundColor = chat.from === name1 ? "aliceblue" : "#4e4b4b";
-        messages.appendChild(messageElement);
-    });
-}
-const socket = io("http://localhost:3000");
+       const socket = io("http://localhost:3000");
 const name1 = document.querySelector(".name1").innerText;
 
 socket.on("connect", () => {
@@ -78,40 +52,68 @@ socket.on("reply", (data) => {
     console.log("Server reply:", data);
 });
 
+// Function to display a single message
+function display(chat_box, isSender) {
+    const messageElement = document.createElement("div");
+    messageElement.textContent = chat_box;
+    messageElement.style.backgroundColor = isSender ? "aliceblue" : "#4e4b4b";
+    messageElement.style.color = isSender ? "black" : "white";
+    messageElement.style.padding = "10px";
+    messageElement.style.margin = "5px";
+    messageElement.style.borderRadius = "10px";
+    document.querySelector(".messages").appendChild(messageElement);
+}
 
-socket.on("receive-msg", (chat_box) => {
-    display(chat_box);
-});
+// Function to display all messages in the chat
+function display3(chats) {
+    const messagesContainer = document.querySelector(".messages");
+    messagesContainer.innerHTML = ""; // Clear previous messages
+    chats.forEach(chat => {
+        const isSender = chat.from === name1;
+        display(chat.message, isSender);
+    });
+}
 
-
-document.querySelector(".vt").addEventListener("click", event => {
-    const contact = event.target.closest(".contact");
-    if (contact) {
-        const name = contact.querySelector(".name").innerText;
-        const messages = document.querySelector(".messages");
-        messages.style.backgroundColor = name === name1 ? "aliceblue" : "#4e4b4b";
-
-        socket.emit("details", { to_name: name, from_name: name1, from_id: socket.id });
-
-        socket.on("display-msg", data => {
-            display3(data.tot_chats);
-        });
-        socket.on("receiving-msg",(ele)=>{
-        display(ele)
-        })
-    }
-});
-
+// Handle sending messages
 document.querySelector(".send").addEventListener("click", () => {
-    const chat_box = document.querySelector(".chat_box").value.trim();
+    const chatBoxInput = document.querySelector(".chat_box");
+    const chat_box = chatBoxInput.value.trim();
+
     if (!chat_box) {
         alert("Message cannot be empty!");
         return;
     }
+
     socket.emit("sending-msg", { name1, chat_box });
-    document.querySelector(".chat_box").value = "";
+    display(chat_box, true); // Show the message immediately
+    chatBoxInput.value = ""; // Clear input
 });
 
+// Handle contact selection
+document.querySelector(".vt").addEventListener("click", event => {
+    const contact = event.target.closest(".contact");
+    if (contact) {
+        const to_name = contact.querySelector(".name").innerText;
+        socket.emit("details", { to_name, from_name: name1, from_id: socket.id });
+
+        // Prevent multiple listeners on "display-msg" and "receiving-msg"
+        socket.off("display-msg");
+        socket.off("receiving-msg");
+
+        socket.on("display-msg", data => {
+            display3(data.tot_chats); // Display chat history
+        });
+
+        socket.on("receiving-msg", msg => {
+            display(msg, false); // Display received message
+        });
+    }
+});
+
+// Receive a general broadcast message
+socket.on("receive-msg", chat_box => {
+    display(chat_box, false);
+});
 
 
     </script>
