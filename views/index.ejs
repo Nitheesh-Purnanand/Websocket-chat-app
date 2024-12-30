@@ -40,7 +40,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js" integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-       const socket = io("http://localhost:3000");
+       const socket = io(); // Automatically adapts to the current hostname and port
+
 const name1 = document.querySelector(".name1").innerText;
 
 socket.on("connect", () => {
