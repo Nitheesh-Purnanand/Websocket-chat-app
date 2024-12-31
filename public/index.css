@@ -113,6 +113,7 @@ h1 {
     border-left: 5px solid black;
     justify-content: space-between;
 }
+
 .input-container {
     display: flex;
     align-items: center; /* Vertically aligns items */
@@ -120,7 +121,6 @@ h1 {
     background-color: aliceblue;
     border-top: 1px solid #ddd; /* Top border for separation */
 }
-
 
 .messages {
     flex: 1;
@@ -142,27 +142,6 @@ h1 {
     color: #333; /* Dark text for readability */
 }
 
-
-.send {
-    width: 10%; /* Smaller width for proportion */
-    height: 40px; /* Matches chat_box height */
-    margin-left: 10px; /* Adds space between chat_box and send */
-    background-color: #25d366; /* WhatsApp green */
-    color: white;
-    cursor: pointer;
-    border-radius: 20px; /* Rounded edges */
-    border: none;
-    font-size: 16px; /* Matches chat_box font size */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.send:hover {
-    background-color: #1aa84e; /* Darker green on hover */
-}
-
-
 .send {
     width: 12%; /* Slightly wider */
     height: 60px; /* Matches chat_box height */
@@ -180,4 +159,62 @@ h1 {
 
 .send:hover {
     background-color: #1aa84e; /* Darker green on hover */
+}
+
+/* Responsive design for devices with width 320px or smaller */
+@media (max-width: 320px) {
+    .header {
+        height: 50px;
+    }
+
+    img {
+        margin-left: 10px;
+        margin-top: 5px;
+        height: 35px;
+        width: 35px;
+    }
+
+    .wsp {
+        font-size: 28px;
+    }
+
+    .vt {
+        flex-direction: column;
+    }
+
+    .vto {
+        width: 100%;
+        height: 50%;
+        border: 3px solid black;
+    }
+
+    .main {
+        width: 100%;
+        height: 50%;
+        border-left: none;
+    }
+
+    .sbox {
+        width: 85%;
+    }
+
+    .contact {
+        padding: 5px;
+    }
+
+    .name {
+        font-size: 16px;
+    }
+
+    .chat_box {
+        width: 75%;
+        height: 50px;
+        font-size: 14px;
+    }
+
+    .send {
+        width: 15%;
+        height: 50px;
+        font-size: 14px;
+    }
 }
