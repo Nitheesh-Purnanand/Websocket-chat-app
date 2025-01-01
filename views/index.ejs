@@ -7,7 +7,7 @@
     <link href="/index.css" rel="stylesheet" >
 </head>
 <body>
-    <div class="header"><img src="./whatsapp-brands-solid (1).svg"><p class="wsp">NotWhatsapp</p></div>
+    <div class="header"><img src="./whatsapp-brands-solid (1).svg"><p class="wsp">TALE</p></div>
     <div class="vt">
         <div class="vto">
         <div class="ch"><h1>Chats</h1></div>
@@ -53,7 +53,6 @@ socket.on("reply", (data) => {
     console.log("Server reply:", data);
 });
 
-// Function to display a single message
 function display(chat_box, isSender) {
     const messageElement = document.createElement("div");
     messageElement.textContent = chat_box;
@@ -65,17 +64,15 @@ function display(chat_box, isSender) {
     document.querySelector(".messages").appendChild(messageElement);
 }
 
-// Function to display all messages in the chat
 function display3(chats) {
     const messagesContainer = document.querySelector(".messages");
-    messagesContainer.innerHTML = ""; // Clear previous messages
+    messagesContainer.innerHTML = "";
     chats.forEach(chat => {
         const isSender = chat.from === name1;
         display(chat.message, isSender);
     });
 }
 
-// Handle sending messages
 document.querySelector(".send").addEventListener("click", () => {
     const chatBoxInput = document.querySelector(".chat_box");
     const chat_box = chatBoxInput.value.trim();
@@ -86,32 +83,30 @@ document.querySelector(".send").addEventListener("click", () => {
     }
 
     socket.emit("sending-msg", { name1, chat_box });
-    display(chat_box, true); // Show the message immediately
-    chatBoxInput.value = ""; // Clear input
+    display(chat_box, true);
+    chatBoxInput.value = "";
 });
 
-// Handle contact selection
+
 document.querySelector(".vt").addEventListener("click", event => {
     const contact = event.target.closest(".contact");
     if (contact) {
         const to_name = contact.querySelector(".name").innerText;
         socket.emit("details", { to_name, from_name: name1, from_id: socket.id });
-
-        // Prevent multiple listeners on "display-msg" and "receiving-msg"
+        
         socket.off("display-msg");
         socket.off("receiving-msg");
 
         socket.on("display-msg", data => {
-            display3(data.tot_chats); // Display chat history
+            display3(data.tot_chats);
         });
 
         socket.on("receiving-msg", msg => {
-            display(msg, false); // Display received message
+            display(msg, false);
         });
     }
 });
 
-// Receive a general broadcast message
 socket.on("receive-msg", chat_box => {
     display(chat_box, false);
 });

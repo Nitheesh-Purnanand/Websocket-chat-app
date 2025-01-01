@@ -162,7 +162,7 @@ h1 {
 }
 
 /* Responsive design for devices with width 320px or smaller */
-@media (max-width: 320px) {
+@media (max-width: 400px) {
     .header {
         height: 50px;
     }
@@ -210,11 +210,16 @@ h1 {
         width: 75%;
         height: 50px;
         font-size: 14px;
+        position: absolute;
+        bottom: 20px;
     }
 
     .send {
         width: 15%;
         height: 50px;
         font-size: 14px;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
     }
 }

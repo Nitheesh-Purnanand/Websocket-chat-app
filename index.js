@@ -6,7 +6,7 @@ const path = require("path");
 
 const app = express();
 
-// Middleware
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
@@ -16,7 +16,7 @@ app.use(express.json());
 const __dirname1 = path.resolve();
 app.use(express.static(path.join(__dirname1, "public")));
 
-// MongoDB Connection
+
 const MONGODB_URI = "mongodb://127.0.0.1:27017/whatsapp_users";
 const PORT = 3000;
 
@@ -34,7 +34,7 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
-// Schemas
+  
 const userschema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -56,7 +56,6 @@ const chatschema = new mongoose.Schema(
 const user = mongoose.model("user", userschema);
 const chat = mongoose.model("chat", chatschema);
 
-// Routes
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -84,21 +83,21 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Error handling middleware
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something broke!" });
 });
 
-// Start server
+
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// Socket.io setup
+
 const io = new Server(server, {
   cors: {
-    origin: "*", // Ensure this is open for external connections
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -181,7 +180,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Handle process termination
+
 process.on("SIGTERM", () => {
   console.log("SIGTERM received. Shutting down gracefully");
   server.close(() => {
