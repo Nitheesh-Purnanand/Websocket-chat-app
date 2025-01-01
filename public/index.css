@@ -139,7 +139,7 @@ h1 {
     outline: none;
     font-size: 18px; /* Slightly larger font size */
     background-color: #f0f0f0; /* Light gray background */
-    color: #333; /* Dark text for readability */
+    color: #333;
 }
 
 .send {

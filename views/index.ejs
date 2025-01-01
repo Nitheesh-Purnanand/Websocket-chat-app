@@ -57,8 +57,11 @@ socket.on("reply", (data) => {
 function display(chat_box, isSender) {
     const messageElement = document.createElement("div");
     messageElement.textContent = chat_box;
-    messageElement.style.backgroundColor = isSender ? "aliceblue" : "#4e4b4b";
+    messageElement.style.backgroundColor = isSender ? "rgb(168, 211, 249)" : "#4e4b4b";
+    messageElement.style.textAlign = isSender ? "end" : "start";
     messageElement.style.color = isSender ? "black" : "white";
+    messageElement.style.fontSize = "3vh";
+    messageElement.style.position = "relative";
     messageElement.style.padding = "10px";
     messageElement.style.margin = "5px";
     messageElement.style.borderRadius = "10px";
